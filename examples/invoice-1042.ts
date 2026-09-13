@@ -4,8 +4,8 @@ import {
   hashProposal,
   hashBinding,
   bindingFromBundle,
-} from "@sai/vap";
-import type { AuthorizedIntent, Mandate } from "@sai/vap";
+} from "@sai-labs/vap";
+import type { AuthorizedIntent, Mandate } from "@sai-labs/vap";
 
 const USDC = "eip155:1:0xA0b86991c6218b36c1d19D4a2e9Eb0cE3606eB48";
 const RECIPIENT = "0x1111111111111111111111111111111111111111";

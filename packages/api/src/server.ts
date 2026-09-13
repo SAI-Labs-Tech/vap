@@ -1,5 +1,5 @@
 import { createServer, type IncomingMessage, type ServerResponse } from "node:http";
-import { VapRuntime, VapError, type AuthorizedIntent, type Mandate, type Role, type Verdict } from "@sai/vap";
+import { VapRuntime, VapError, type AuthorizedIntent, type Mandate, type Role, type Verdict } from "@sai-labs/vap";
 
 const ADDR = process.env.VAP_API_ADDR ?? ":8097";
 const ORIGINS = (process.env.VAP_CORS_ORIGINS ??

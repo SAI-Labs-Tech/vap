@@ -17,11 +17,12 @@
     "packages/api"
   ],
   "scripts": {
-    "build": "npm run build -w @sai/vap",
-    "test": "npm test -w @sai/vap",
-    "example": "npm run example -w @sai/vap",
-    "mcp": "npm start -w @sai/vap-mcp",
-    "api": "npm start -w @sai/vap-api",
+    "build": "npm run build -w @sai-labs/vap && npm run build -w @sai-labs/vap-mcp",
+    "test": "npm test -w @sai-labs/vap",
+    "example": "npm run example -w @sai-labs/vap",
+    "mcp": "npm start -w @sai-labs/vap-mcp",
+    "api": "npm start -w @sai-labs/vap-api",
+    "publish:packages": "npm publish -w @sai-labs/vap && npm publish -w @sai-labs/vap-mcp",
     "docs": "npm run dev --prefix docs"
   }
 }

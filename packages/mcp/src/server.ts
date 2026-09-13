@@ -1,6 +1,7 @@
+#!/usr/bin/env node
 import { McpServer } from "@modelcontextprotocol/sdk/server/mcp.js";
 import { StdioServerTransport } from "@modelcontextprotocol/sdk/server/stdio.js";
-import { VapRuntime, VapError, type Role, type Verdict } from "@sai/vap";
+import { VapRuntime, VapError, type Role, type Verdict } from "@sai-labs/vap";
 import { z } from "zod";
 
 const vap = new VapRuntime({ tenantId: process.env.VAP_TENANT ?? "sai" });

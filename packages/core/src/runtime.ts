@@ -208,9 +208,6 @@ export class VapRuntime {
     if (op.state !== "INTENT_AUTHORIZED" && op.state !== "PREPARED" && op.state !== "NEEDS_INPUT") {
       throw new VapError("STATE", `cannot propose from ${op.state}`);
     }
-    if (op.state === "SUBMITTED" || op.state === "SUBMISSION_UNKNOWN") {
-      throw new VapError("STATE", "previous revision already submitted");
-    }
     const revision = op.proposal ? op.proposal.revision + 1 : 1;
     const proposal: Proposal = {
       proposalId: `${op.id}:p${revision}`,

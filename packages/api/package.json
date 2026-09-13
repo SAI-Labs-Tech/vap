@@ -1,5 +1,6 @@
 {
-  "name": "@sai/vap-api",
+  "name": "@sai-labs/vap-api",
+  "private": true,
   "version": "0.1.0",
   "description": "HTTP API for SAI VAP. MCP is a separate transport.",
   "homepage": "https://vap-api.saiwallet.ai",
@@ -16,7 +17,7 @@
     "start": "tsx src/server.ts"
   },
   "dependencies": {
-    "@sai/vap": "0.1.0"
+    "@sai-labs/vap": "0.1.0"
   },
   "devDependencies": {
     "@types/node": "^24.5.2",

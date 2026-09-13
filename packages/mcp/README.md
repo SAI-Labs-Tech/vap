@@ -1,10 +1,17 @@
-# SAI VAP MCP
+# @sai-labs/vap-mcp
 
 MCP facade for [SAI Verified Agent Protocol](https://github.com/SAI-Labs-Tech/vap). MCP auth authenticates a client to this process. It does not approve a payment.
 
-Source of this package lives in the VAP monorepo at [`packages/mcp`](https://github.com/SAI-Labs-Tech/vap/tree/main/packages/mcp). This repo is the public MCP listing.
+```bash
+npm install -g @sai-labs/vap-mcp
+VAP_SCOPE=agent VAP_TENANT=sai sai-vap-mcp
+```
 
-Site: https://vap.saiwallet.ai/reference/sdk/
+```bash
+npx @sai-labs/vap-mcp
+```
+
+Source lives in the VAP monorepo at [`packages/mcp`](https://github.com/SAI-Labs-Tech/vap/tree/main/packages/mcp). Spec: https://vap.saiwallet.ai/reference/sdk/
 
 ## Scopes
 

@@ -1,7 +1,8 @@
 {
-  "name": "@sai/vap-mcp",
+  "name": "@sai-labs/vap-mcp",
   "version": "0.1.0",
   "description": "MCP facade for SAI VAP. MCP auth is not payment approval.",
+  "license": "MIT",
   "homepage": "https://github.com/SAI-Labs-Tech/vap-mcp",
   "bugs": {
     "url": "https://github.com/SAI-Labs-Tech/vap-mcp/issues"
@@ -10,18 +11,32 @@
     "type": "git",
     "url": "git+https://github.com/SAI-Labs-Tech/vap-mcp.git"
   },
+  "author": "SAI Labs",
+  "keywords": [
+    "vap",
+    "sai",
+    "mcp",
+    "modelcontextprotocol"
+  ],
   "type": "module",
   "bin": {
     "sai-vap-mcp": "./dist/server.js"
   },
+  "files": [
+    "dist",
+    "README.md"
+  ],
+  "publishConfig": {
+    "access": "public"
+  },
   "scripts": {
     "build": "tsc -p tsconfig.json",
-    "start": "tsx src/server.ts",
-    "prepare:build": "tsc -p tsconfig.json"
+    "prepack": "npm run build",
+    "start": "tsx src/server.ts"
   },
   "dependencies": {
     "@modelcontextprotocol/sdk": "^1.18.1",
-    "@sai/vap": "0.1.0",
+    "@sai-labs/vap": "0.1.0",
     "zod": "^3.25.76"
   },
   "devDependencies": {

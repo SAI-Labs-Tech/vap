@@ -7,8 +7,8 @@ The protocol is schemas, messages, signatures, and gate rules. MCP is one transp
 
 | Package | Job |
 | --- | --- |
-| [`@sai/vap`](https://github.com/SAI-Labs-Tech/vap) | Canonicalization, hashes, role policy, bundle verify, reference runtime |
-| [`@sai/vap-mcp`](https://github.com/SAI-Labs-Tech/vap-mcp) | Tools with separate scopes |
+| [`@sai-labs/vap`](https://www.npmjs.com/package/@sai-labs/vap) | Canonicalization, hashes, role policy, bundle verify, reference runtime |
+| [`@sai-labs/vap-mcp`](https://www.npmjs.com/package/@sai-labs/vap-mcp) | Tools with separate scopes |
 | docs | This site |
 
 Python and Go ports are planned. Flutter needs a confirmation surface; local bundle verify is optional.
@@ -29,7 +29,7 @@ Default agent view: prepare, submit, read. `VAP_SCOPE=agent|verifier|executor|al
 MCP session IDs are not authorization. No token passthrough. Audience-bound tokens, minimal scopes. See [MCP security best practices](https://modelcontextprotocol.io/docs/tutorials/security/security_best_practices).
 
 ```ts
-import { VapRuntime } from "@sai/vap";
+import { VapRuntime } from "@sai-labs/vap";
 
 const vap = new VapRuntime();
 vap.registerMandate(mandate);
