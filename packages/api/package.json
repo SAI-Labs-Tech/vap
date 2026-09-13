@@ -1,0 +1,26 @@
+{
+  "name": "@sai/vap-api",
+  "version": "0.1.0",
+  "description": "HTTP API for SAI VAP. MCP is a separate transport.",
+  "homepage": "https://vap-api.saiwallet.ai",
+  "bugs": {
+    "url": "https://github.com/SAI-Labs-Tech/vap/issues"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/SAI-Labs-Tech/vap.git",
+    "directory": "packages/api"
+  },
+  "type": "module",
+  "scripts": {
+    "start": "tsx src/server.ts"
+  },
+  "dependencies": {
+    "@sai/vap": "0.1.0"
+  },
+  "devDependencies": {
+    "@types/node": "^24.5.2",
+    "tsx": "^4.20.5",
+    "typescript": "^5.9.2"
+  }
+}

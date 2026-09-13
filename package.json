@@ -1,0 +1,27 @@
+{
+  "name": "sai-vap",
+  "private": true,
+  "version": "0.1.0",
+  "description": "SAI VAP — SAI Verified Agent Protocol",
+  "homepage": "https://vap.saiwallet.ai",
+  "bugs": {
+    "url": "https://github.com/SAI-Labs-Tech/vap/issues"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/SAI-Labs-Tech/vap.git"
+  },
+  "workspaces": [
+    "packages/core",
+    "packages/mcp",
+    "packages/api"
+  ],
+  "scripts": {
+    "build": "npm run build -w @sai/vap",
+    "test": "npm test -w @sai/vap",
+    "example": "npm run example -w @sai/vap",
+    "mcp": "npm start -w @sai/vap-mcp",
+    "api": "npm start -w @sai/vap-api",
+    "docs": "npm run dev --prefix docs"
+  }
+}

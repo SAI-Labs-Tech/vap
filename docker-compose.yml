@@ -1,0 +1,27 @@
+services:
+  vap-docs:
+    container_name: vap-docs
+    image: node:22-alpine
+    restart: unless-stopped
+    working_dir: /app
+    command: ["npx", "serve", "dist", "-l", "tcp://0.0.0.0:4322"]
+    volumes:
+      - /opt/vap/docs/dist:/app/dist:ro
+      - /opt/vap/docs/node_modules:/app/node_modules:ro
+    ports:
+      - "4322:4322"
+
+  vap-api:
+    container_name: vap-api
+    image: node:22-bookworm-slim
+    restart: unless-stopped
+    working_dir: /opt/vap
+    command: ["npx", "tsx", "packages/api/src/server.ts"]
+    volumes:
+      - /opt/vap:/opt/vap
+    environment:
+      VAP_API_ADDR: ":8097"
+      VAP_TENANT: sai
+      VAP_CORS_ORIGINS: https://vap.saiwallet.ai,https://sai-labs.pro,http://localhost:4322
+    ports:
+      - "8097:8097"

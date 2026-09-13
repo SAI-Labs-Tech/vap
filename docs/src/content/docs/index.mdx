@@ -1,0 +1,42 @@
+---
+title: SAI VAP
+description: SAI Verified Agent Protocol
+template: splash
+hero:
+  tagline: Agents prepare. They do not execute.
+  image:
+    file: ../../assets/sai_logo.svg
+  actions:
+    - text: Start Reading
+      link: /reference/overview/
+      icon: right-arrow
+      variant: primary
+    - text: SDK
+      link: /reference/sdk/
+      icon: document
+    - text: GitHub
+      link: https://github.com/SAI-Labs-Tech/vap
+      icon: github
+---
+
+import {CardGrid} from '@astrojs/starlight/components';
+import Card from 'starlight-plugin-icons/components/Card.astro';
+
+The protocol sits between a user-authorized request and a payment or chain call. Each step leaves a signed attestation. The execution path will not move without the full set.
+
+<CardGrid>
+	<Card title="Intent first" icon="i-heroicons:lock-closed" bordered>
+		The agent does not invent the payment. A trusted app or a limited mandate issues `AuthorizedIntent` before `prepare` runs.
+	</Card>
+	<Card title="Independent checks" icon="i-heroicons:shield-check" bordered>
+		Semantic and safety verifiers decode the payload themselves. An LLM confidence score is not a signature.
+	</Card>
+	<Card title="One frozen action" icon="i-heroicons:cube" bordered>
+		The gate recomputes hashes, checks roles, and claims the business key. A boolean in a database is not permission to send funds.
+	</Card>
+</CardGrid>
+
+- [Overview](/reference/overview/)
+- [Roles](/reference/roles/)
+- [Flow](/reference/flow/authorization/)
+- [SDK and MCP](/reference/sdk/)
