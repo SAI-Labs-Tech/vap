@@ -1,29 +1,34 @@
 ---
 title: SDK
-description: "@sai-labs/vap and MCP"
+description: SAI Guard SDK and MCP
 ---
 
-Package names remain `@sai-labs/vap` and `@sai-labs/vap-mcp`. Wire hashes still use the `VAP/0.1/` domain prefix. See [from v0.1](/reference/migration/).
+Integrator packages:
 
-MCP is a transport. [MCP authorization](https://modelcontextprotocol.io/specification/2025-06-18/basic/authorization) authenticates a client to a server. It does not approve a transaction. An MCP-built payload gets the same verification as WalletConnect.
+- [`@sai-labs/guard`](https://www.npmjs.com/package/@sai-labs/guard) — TypeScript client for `protect()`
+- [`@sai-labs/guard-mcp`](https://www.npmjs.com/package/@sai-labs/guard-mcp) — MCP server over that client
 
-[npm @sai-labs/vap](https://www.npmjs.com/package/@sai-labs/vap) · [GitHub](https://github.com/SAI-Labs-Tech/vap)
+The v0.1 attestation gate remains [`@sai-labs/vap`](https://www.npmjs.com/package/@sai-labs/vap) / [`@sai-labs/vap-mcp`](https://www.npmjs.com/package/@sai-labs/vap-mcp). Wire hashes still use the `VAP/0.1/` domain prefix. See [from v0.1](/reference/migration/).
 
-[npm @sai-labs/vap-mcp](https://www.npmjs.com/package/@sai-labs/vap-mcp) · [GitHub](https://github.com/SAI-Labs-Tech/vap-mcp)
+MCP is a transport. [MCP authorization](https://modelcontextprotocol.io/specification/2025-06-18/basic/authorization) authenticates a client to a server. It does not approve a transaction.
+
+[GitHub](https://github.com/SAI-Labs-Tech/vap)
 
 ## Installation
 
 ```bash
-npm install @sai-labs/vap
+npm install @sai-labs/guard
 ```
 
-## protect() (in development)
-
-Not exported by `@sai-labs/vap@0.1.0`.
-
 ```ts
-const result = await vap.protect({
-  chainId: 1,
+import { SaiGuard } from "@sai-labs/guard";
+
+const guard = new SaiGuard({
+  apiKey: process.env.SAI_GUARD_API_KEY,
+});
+
+const result = await guard.protect({
+  chain: "ethereum",
   intent,
   transaction,
 });
@@ -32,20 +37,18 @@ if (result.verdict === "BLOCKED") {
   return;
 }
 
-await wallet.signTransaction(transaction);
+// Signing stays in the wallet / calling application.
 ```
 
-Target result shape:
+`POST /v1/protect` is not deployed on the current HTTP API. The SDK maps HTTP 404 to `PROTECT_UNAVAILABLE` instead of inventing a verdict. See [protocol status](/reference/status/).
 
-```ts
-{
-  verdict: "PROTECTED" | "WARNING" | "BLOCKED";
-  effects: NormalizedEffects;
-  checks: Record<string, "PASS" | "FAIL" | "UNAVAILABLE">;
-  warnings: string[];
-  reasonCodes: string[];
-}
+## MCP
+
+```bash
+npx @sai-labs/guard-mcp
 ```
+
+v0.1 tool: `guard_protect_transaction`. The MCP server does not sign or broadcast.
 
 ## Available: v0.1 runtime
 
@@ -64,7 +67,7 @@ const done = vap.executeApproved(intent.intentId);
 
 The agent scope does not mint intents and does not hold execution credentials. `UNSUPPORTED_CAPABILITY` if the adapter cannot bind an exact payload.
 
-## MCP tools (v0.1)
+## MCP tools (v0.1 gate)
 
 | Tool | Caller |
 | --- | --- |

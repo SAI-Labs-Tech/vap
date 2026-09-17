@@ -14,15 +14,22 @@
   "workspaces": [
     "packages/core",
     "packages/mcp",
-    "packages/api"
+    "packages/api",
+    "packages/guard",
+    "packages/guard-mcp"
   ],
   "scripts": {
-    "build": "npm run build -w @sai-labs/vap && npm run build -w @sai-labs/vap-mcp",
-    "test": "npm test -w @sai-labs/vap",
+    "build": "npm run build -w @sai-labs/vap && npm run build -w @sai-labs/vap-mcp && npm run build -w @sai-labs/guard && npm run build -w @sai-labs/guard-mcp",
+    "test": "npm test -w @sai-labs/vap && npm test -w @sai-labs/guard && npm test -w @sai-labs/guard-mcp",
+    "lint": "npm run build -w @sai-labs/guard && npm run lint -w @sai-labs/guard && npm run lint -w @sai-labs/guard-mcp",
+    "typecheck": "npm run build -w @sai-labs/guard && npm run typecheck -w @sai-labs/guard && npm run typecheck -w @sai-labs/guard-mcp",
+    "pack:dry-run": "npm pack --dry-run -w @sai-labs/guard && npm pack --dry-run -w @sai-labs/guard-mcp",
     "example": "npm run example -w @sai-labs/vap",
     "mcp": "npm start -w @sai-labs/vap-mcp",
+    "guard-mcp": "npm start -w @sai-labs/guard-mcp",
     "api": "npm start -w @sai-labs/vap-api",
     "publish:packages": "npm publish -w @sai-labs/vap && npm publish -w @sai-labs/vap-mcp",
+    "publish:guard": "npm publish -w @sai-labs/guard && npm publish -w @sai-labs/guard-mcp",
     "docs": "npm run dev --prefix docs"
   }
 }

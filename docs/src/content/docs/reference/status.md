@@ -8,6 +8,8 @@ Statuses are taken from this repository. They are not product promises.
 | Capability | Status |
 | --- | --- |
 | Hash-bound attestation gate (`@sai-labs/vap@0.1.0`) | Available |
+| SAI Guard SDK (`@sai-labs/guard@0.1.0`) | Available (client; `POST /v1/protect` not deployed) |
+| SAI Guard MCP (`@sai-labs/guard-mcp@0.1.0`, tool `guard_protect_transaction`) | Available |
 | HTTP API (`/v1/mandates`, `/v1/intents`, `/v1/prepare`, `/v1/proposals`, `/v1/attestations`, `/v1/execute`) | Available |
 | MCP tools (`vap.*` on `@sai-labs/vap-mcp`) | Available |
 | `evm-transfer-v1` local transfer decoder | Available |

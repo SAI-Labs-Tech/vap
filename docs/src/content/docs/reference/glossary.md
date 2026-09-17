@@ -9,7 +9,7 @@ description: Protocol terms
 
 **SAI Guard Agent** — Orchestrates verification providers; does not manage user assets.
 
-**SAI Guard SDK** — Integrator surface (`@sai-labs/vap` today).
+**SAI Guard SDK** — Integrator surface (`@sai-labs/guard`). The v0.1 gate remains `@sai-labs/vap`.
 
 **SAI Guard Risk Engine** — Deterministic policy that emits `PROTECTED`, `WARNING`, or `BLOCKED`.
 

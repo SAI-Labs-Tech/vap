@@ -5,5 +5,7 @@ build/
 .env
 .env.production
 *.log
+*.tgz
+coverage/
 .DS_Store
 .starlight-icons
