@@ -1,6 +1,0 @@
-dist/
-.astro/
-node_modules/
-.env
-.starlight-icons
-.DS_Store
