@@ -1,109 +1,60 @@
 ---
-title: Three-Layer Verification
-description: Deterministic effects, AI intent match, external risk
+title: Verification model
+description: Deterministic checks and semantic comparison
 ---
 
-**In Development.** v0.1 maps loosely: decoder + gate ≈ layer 1; semantic attestation ≈ layer 2; safety attestation ≈ layer 3. v0.1 does not call external simulation or AML APIs.
-
-## Layer 1 — Deterministic verification
-
-No AI is required.
-
-- decode calldata / instructions;
-- method, recipient, transferred assets;
-- token approvals, unlimited approvals, operator approvals;
-- simulate or pre-execute;
-- balance changes, internal calls;
-- gas/energy estimate where applicable;
-- revert / failure;
-- compare deterministic expected values to intent where they are numeric and addresses.
-
-Output: **normalized effects**.
-
-```json
-{
-  "assetChanges": [
-    { "asset": "USDT", "change": "-1000" },
-    { "asset": "ETH", "change": "+0.3231" }
-  ],
-  "approvals": [],
-  "unexpectedTransfers": [],
-  "simulationSuccess": true
-}
-```
-
-If simulation fails or cannot run, layer 1 does not invent PASS.
-
-## Layer 2 — Independent AI intent verification
-
-The model must **not** answer “is this transaction safe?”
-
-It answers: does the simulated outcome correspond to the user’s explicit intent?
-
-Feed structured fields, not raw chain dumps, whenever possible.
-
-```json
-{
-  "intent": {
-    "action": "swap",
-    "fromAsset": "USDT",
-    "fromAmount": "1000",
-    "toAsset": "ETH",
-    "minimumReceived": "0.31"
-  },
-  "effects": {
-    "USDT": "-1000",
-    "ETH": "+0.3231"
-  },
-  "approvals": []
-}
-```
-
-```json
-{
-  "verdict": "MATCH",
-  "confidence": 0.99,
-  "issues": []
-}
-```
-
-Verdicts: `MATCH`, `MISMATCH`, `UNCERTAIN`. Confidence is not a user-facing score. `MISMATCH` is a hard input to the Risk Engine. The producer agent must not be this verifier.
-
-## Layer 3 — External security and risk
-
-Provider-independent interfaces, for example:
+Verification has two classes of logic. Mixing them is a protocol error.
 
 ```text
-SecurityProvider
-AMLProvider
-SimulationProvider
-ReputationProvider
+Normalized Effects
+        │
+        ├─ Deterministic checks  → facts
+        └─ Semantic verifier     → MATCH / MISMATCH / UNCERTAIN
+                │
+                ▼
+     SAI Guard Risk Engine
 ```
 
-Possible capabilities: malicious address/contract, phishing, honeypot, token security, approval risk, reputation, AML, sanctions, fraud intel, extra simulation, analytics.
+## Normalized effects
 
-**None of these vendors are wired in the current repository.** Treat names as examples for adapters:
+Canonical description of what the proposal will do if submitted:
 
-- GoPlus, Blockaid, Tenderly, TRM Labs, AMLBot, native RPC / full-node simulation.
+- asset deltas;
+- approvals (spender, allowance, unlimited flag);
+- unexpected transfers;
+- internal calls (when the simulator supplies them);
+- `simulationSuccess`.
 
-Do not claim a live integration until the adapter exists. See [Providers](/reference/providers/).
+Effects MUST be derived from the unsigned payload and simulation (or an equivalent pre-execute). They MUST NOT be taken from a dApp caption, agent summary, or MCP tool description.
 
-```mermaid
-flowchart LR
-  subgraph L1[Layer 1]
-    D[Decode]
-    S[Simulate]
-    E[Effects]
-  end
-  subgraph L2[Layer 2]
-    I[Intent vs effects]
-  end
-  subgraph L3[Layer 3]
-    Sec[Security]
-    Aml[AML]
-  end
-  L1 --> L2
-  L1 --> L3
-  L2 --> R[Risk Engine]
-  L3 --> R
-```
+## Deterministic checks
+
+Evaluate facts without a language model:
+
+- decode method, recipient, transferred assets;
+- token approvals, unlimited approvals, operator approvals;
+- simulation success / revert;
+- numeric and address equality against intent (amount, destination, min-out);
+- security-provider signals (malicious contract, sanctions match, phishing origin).
+
+If simulation is required and fails, this stage MUST NOT invent a pass.
+
+## Semantic verifier
+
+Compares normalized effects with user intent.
+
+**Input:** structured intent and effects, not raw chain dumps when structured fields exist.
+
+**Output:** `MATCH` | `MISMATCH` | `UNCERTAIN`.
+
+`MISMATCH` is a hard input to the Risk Engine. Confidence, if computed, is not a user-facing score.
+
+The producer of the transaction MUST NOT be the only semantic verifier.
+
+## External providers
+
+Optional inputs behind interfaces: `SimulationProvider`, `SecurityProvider`, `AMLProvider`, `ReputationProvider`. No adapter in this repository calls a vendor. See [integrations](/reference/providers/).
+
+## Independence
+
+The component that constructed the proposal MUST NOT be the only source of “what this transaction does.” Prefer chain simulation over the producer’s self-report.

@@ -1,70 +1,53 @@
 ---
-title: SDK and MCP
-description: Integrate protect(); MCP is not a trust boundary
+title: SDK
+description: "@sai-labs/vap and MCP"
 ---
 
-import Card from 'starlight-plugin-icons/components/Card.astro';
+Package names remain `@sai-labs/vap` and `@sai-labs/vap-mcp`. Wire hashes still use the `VAP/0.1/` domain prefix. See [from v0.1](/reference/migration/).
 
-MCP is a transport. HTTP/SDK is another. [MCP authorization](https://modelcontextprotocol.io/specification/2025-06-18/basic/authorization) authenticates a client to a server. It does not approve a transaction.
+MCP is a transport. [MCP authorization](https://modelcontextprotocol.io/specification/2025-06-18/basic/authorization) authenticates a client to a server. It does not approve a transaction. An MCP-built payload gets the same verification as WalletConnect.
 
-An MCP-built payload gets the same verification as WalletConnect or an in-wallet swap. Do not trust a tool because the MCP server is allowlisted. See [MCP security best practices](https://modelcontextprotocol.io/docs/tutorials/security/security_best_practices).
+[npm @sai-labs/vap](https://www.npmjs.com/package/@sai-labs/vap) · [GitHub](https://github.com/SAI-Labs-Tech/vap)
 
-<Card title="@sai-labs/vap" icon="i-heroicons:cube" bordered>
-	**Available:** v0.1 canonicalization, hashes, role policy, gate, demo runtime.
+[npm @sai-labs/vap-mcp](https://www.npmjs.com/package/@sai-labs/vap-mcp) · [GitHub](https://github.com/SAI-Labs-Tech/vap-mcp)
 
-	[npm](https://www.npmjs.com/package/@sai-labs/vap) · [GitHub](https://github.com/SAI-Labs-Tech/vap)
-</Card>
+## Installation
 
-<Card title="@sai-labs/vap-mcp" icon="i-heroicons:command-line" bordered>
-	**Available:** MCP facade over the v0.1 runtime. Scopes `agent|verifier|executor|all`.
+```bash
+npm install @sai-labs/vap
+```
 
-	[npm](https://www.npmjs.com/package/@sai-labs/vap-mcp) · [GitHub](https://github.com/SAI-Labs-Tech/vap-mcp)
-</Card>
+## protect() (in development)
 
-Python and Go ports are planned.
-
-## Target protect API
-
-**In Development.** Not exported by `@sai-labs/vap@0.1.0`.
+Not exported by `@sai-labs/vap@0.1.0`.
 
 ```ts
 const result = await vap.protect({
-  chain: "ethereum",
-  intent: {
-    type: "swap",
-    fromAsset: "USDT",
-    fromAmount: "1000",
-    toAsset: "ETH",
-    minReceived: "0.31",
-  },
-  transaction: { from, to, value, data },
-  context: { source: "walletconnect", origin: "https://app.example.com" },
+  chainId: 1,
+  intent,
+  transaction,
 });
+
+if (result.verdict === "BLOCKED") {
+  return;
+}
+
+await wallet.signTransaction(transaction);
 ```
+
+Target result shape:
 
 ```ts
 {
-  verdict: "PROTECTED",
-  summary: "Transaction matches the requested swap.",
-  effects: [
-    { asset: "USDT", change: "-1000" },
-    { asset: "ETH", change: "+0.3231" },
-  ],
-  checks: {
-    simulation: "PASS",
-    intent: "PASS",
-    contractSecurity: "PASS",
-    approvalSecurity: "PASS",
-    aml: "PASS",
-    sanctions: "PASS",
-  },
-  warnings: [],
+  verdict: "PROTECTED" | "WARNING" | "BLOCKED";
+  effects: NormalizedEffects;
+  checks: Record<string, "PASS" | "FAIL" | "UNAVAILABLE">;
+  warnings: string[];
+  reasonCodes: string[];
 }
 ```
 
-Provider-specific payloads stay internal.
-
-## Available v0.1 usage
+## Available: v0.1 runtime
 
 ```ts
 import { VapRuntime } from "@sai-labs/vap";
@@ -79,9 +62,9 @@ vap.submitAttestation({ intentId: intent.intentId, role: "safety-verifier" });
 const done = vap.executeApproved(intent.intentId);
 ```
 
-The agent client does not mint intents and does not hold execution credentials. `UNSUPPORTED_CAPABILITY` if an adapter cannot bind an exact payload.
+The agent scope does not mint intents and does not hold execution credentials. `UNSUPPORTED_CAPABILITY` if the adapter cannot bind an exact payload.
 
-### MCP tools (v0.1)
+## MCP tools (v0.1)
 
 | Tool | Caller |
 | --- | --- |

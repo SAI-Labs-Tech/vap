@@ -1,49 +1,50 @@
 ---
-title: Transaction Lifecycle
+title: Transaction lifecycle
 description: From intent to broadcast
 ---
 
-**In Development** as the protect lifecycle. v0.1 uses mandate → intent → proposal → attestations → gate → submit; see [From v0.1](/reference/migration/).
-
-```mermaid
-sequenceDiagram
-    participant U as User
-    participant W as Wallet
-    participant V as SAI Guard
-    participant A as Protect Agent
-    participant P as Providers
-    participant C as Target chain
-
-    U->>W: Stated intent
-    W->>V: Intent + unsigned tx + context
-    V->>A: Required checks
-    A->>P: Decode / simulate / security / AML / AI
-    P-->>A: Structured results
-    A-->>V: Normalized bundle
-    V->>V: Risk Engine
-    V-->>W: PROTECTED / WARNING / BLOCKED
-    alt PROTECTED or accepted WARNING
-        U->>W: Sign
-        W->>C: Broadcast
-    else BLOCKED
-        U->>W: Cancel or revise intent
-    end
-```
-
 ## Inputs
 
-1. **Intent** — what the user asked (send, swap, approve, …) with assets, amounts, destination, min-out, chain.
-2. **Transaction proposal** — unsigned payload (EVM `to`/`data`/`value`, TRON `TriggerSmartContract`, Solana instructions, WalletConnect request).
-3. **Context** — origin (`walletconnect`, `dapp`, `mcp`, `in-wallet`), URL, requester identity if any.
+**User intent** is the operation the user explicitly requested: action class (send, swap, approve, call), assets, amounts, destination, minimum received, chain. Intent MUST exist before verification. A payee inferred by a model is not intent until a confirmation surface binds it.
 
-Intent must exist before verification. If an agent inferred payee from a PDF, that is not intent until the user or a trusted confirmation surface binds it.
+**Transaction proposal** is the unsigned payload: EVM `to`/`data`/`value`, TRON `TriggerSmartContract`, Solana instructions, or a WalletConnect request.
+
+**Context** is origin metadata: `walletconnect` | `dapp` | `mcp` | `in-wallet`, URL, and requester identity if present.
+
+## Pipeline
+
+```text
+User Intent
+    ↓
+Transaction Proposal + Context
+    ↓
+Simulation
+    ↓
+Normalized Effects
+    ↓
+Deterministic checks + Semantic verifier + Providers
+    ↓
+SAI Guard Risk Engine
+    ↓
+PROTECTED / WARNING / BLOCKED
+    ↓
+Wallet signature (PROTECTED, or WARNING if the user acknowledges)
+    ↓
+Broadcast on the target chain
+```
+
+`BLOCKED` MUST prevent the normal signing flow. The wallet MAY offer a separate, explicit override path only if product policy allows it. Default: do not sign.
+
+SAI Guard Protocol does not broadcast. After an acceptable verdict, the wallet signs and submits on the **target chain**.
 
 ## Outputs
 
 - verdict;
-- normalized effects;
+- [normalized effects](/reference/verification/);
 - per-check statuses;
-- warnings and reason codes;
-- optional [verification receipt](/reference/receipts/) hashes.
+- reason codes;
+- optional [SAI Guard Verification Receipt](/reference/receipts/).
 
-SAI Guard does not broadcast. After PROTECTED (or a policy-allowed WARNING ack), the wallet signs and submits on the target chain.
+## v0.1 mapping
+
+The shipped runtime uses mandate → authorized intent → proposal → semantic/safety attestations → gate → demo submit. It does not emit `PROTECTED` / `WARNING` / `BLOCKED`. See [from v0.1](/reference/migration/).

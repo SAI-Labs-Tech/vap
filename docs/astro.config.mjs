@@ -5,7 +5,7 @@ import Icons from 'starlight-plugin-icons'
 import mermaid from 'astro-mermaid';
 
 export default defineConfig({
-	site: 'https://vap.saiwallet.ai',
+	site: 'https://guard.sai-labs.pro',
 	server: {
 		host: true,
 		port: 4322,
@@ -45,7 +45,7 @@ export default defineConfig({
 				customCss: [
 					'./src/styles/custom.css',
 				],
-				description: 'SAI Guard Protocol',
+				description: 'Pre-signing transaction verification protocol',
 				head: [
 					{ tag: 'link', attrs: { rel: 'icon', href: '/favicon-48.png', type: 'image/png', sizes: '48x48' } },
 					{ tag: 'link', attrs: { rel: 'apple-touch-icon', href: '/apple-touch-icon.png' } },
@@ -59,52 +59,49 @@ export default defineConfig({
 					},
 				},
 				sidebar: [
+					{ label: 'Overview', slug: 'reference/overview' },
 					{
-						label: 'Introduction',
+						label: 'Concepts',
 						items: [
-							{ label: 'Overview', slug: 'reference/overview' },
-							{ label: 'Why SAI Guard', slug: 'reference/why-vap' },
+							{ label: 'Architecture', slug: 'reference/architecture' },
+							{ label: 'Transaction lifecycle', slug: 'reference/lifecycle' },
+							{ label: 'Verification model', slug: 'reference/verification' },
+							{ label: 'Risk engine', slug: 'reference/risk-engine' },
 							{ label: 'AI Transaction Protect', slug: 'reference/transaction-protect' },
-							{ label: 'Core Principles', slug: 'reference/principles' },
 						],
 					},
 					{
-						label: 'Architecture',
+						label: 'Agent infrastructure',
 						items: [
-							{ label: 'Protocol Architecture', slug: 'reference/architecture' },
-							{ label: 'Transaction Lifecycle', slug: 'reference/lifecycle' },
-							{ label: 'Three-Layer Verification', slug: 'reference/verification' },
-							{ label: 'Deterministic Risk Engine', slug: 'reference/risk-engine' },
-							{ label: 'SAI Protect Agent', slug: 'reference/protect-agent' },
-							{ label: 'Threat Model', slug: 'reference/threat-model' },
+							{ label: 'SAI Guard Agent', slug: 'reference/protect-agent' },
+							{ label: 'Arc settlement', slug: 'reference/arc' },
+							{ label: 'Verification receipts', slug: 'reference/receipts' },
 						],
 					},
+					{ label: 'Networks', slug: 'reference/networks' },
+					{ label: 'Guides', slug: 'reference/guides' },
+					{ label: 'SDK', slug: 'reference/sdk' },
 					{
-						label: 'Transaction Protection',
+						label: 'API reference',
 						items: [
-							{ label: 'Transaction Types', slug: 'reference/transactions' },
-							{ label: 'Networks', slug: 'reference/networks' },
-							{ label: 'Examples', slug: 'reference/examples' },
-						],
-					},
-					{
-						label: 'Agentic Infrastructure',
-						items: [
-							{ label: 'Arc — Settlement Layer', slug: 'reference/arc' },
-							{ label: 'Receipts and Marketplace', slug: 'reference/receipts' },
-							{ label: 'Providers', slug: 'reference/providers' },
-						],
-					},
-					{
-						label: 'Developers',
-						items: [
-							{ label: 'SDK and MCP', slug: 'reference/sdk' },
-							{ label: 'REST API', slug: 'reference/api' },
+							{ label: 'HTTP API', slug: 'reference/api' },
 							{ label: 'Schemas', slug: 'reference/schemas' },
+						],
+					},
+					{ label: 'Integrations', slug: 'reference/providers' },
+					{
+						label: 'Security',
+						items: [
+							{ label: 'Threat model', slug: 'reference/threat-model' },
+						],
+					},
+					{
+						label: 'Protocol status',
+						items: [
+							{ label: 'Status', slug: 'reference/status' },
 							{ label: 'From v0.1', slug: 'reference/migration' },
 						],
 					},
-					{ label: 'FAQ', slug: 'reference/faq' },
 					{ label: 'Glossary', slug: 'reference/glossary' },
 				],
 				markdown: {

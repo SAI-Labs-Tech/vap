@@ -1,26 +1,26 @@
 ---
 title: Networks
-description: Chain-agnostic adapters
+description: Chain adapters
 ---
 
-SAI Guard is not an Ethereum-only protocol. Each chain family implements:
+SAI Guard Protocol is chain-agnostic. Each family implements:
 
 ```text
-Chain Adapter → Decoder → Simulation Provider → Normalized Effects
+Chain adapter → decoder → simulation → normalized effects
 ```
+
+BNB Chain, Base, Arbitrum, and other EVM L2s reuse the EVM adapter with a chain id.
 
 ## EVM
 
-**In Development** for general contract calls. **Available** in v0.1: a synthetic `transfer` prepare path (`evm-transfer-v1`), not live mempool simulation.
+**Available:** `evm-transfer-v1` in v0.1. Local decoder for a synthetic `transfer` payload. Not mempool simulation.
 
-Target: `eth_call` / `eth_simulateV1` / provider simulation (e.g. Tenderly — **not integrated**). Decode ERC-20 `transfer` / `approve`, native value, internal traces when the provider supplies them.
+**In development:** general contract-call decode and live simulation (`eth_call` / `eth_simulateV1` / a simulation provider). Target methods: ERC-20 `transfer` / `approve`, native value, internal traces when the provider supplies them.
 
 ## TRON
 
-**Proposed.** Native pre-execution via node / TronGrid-style constant trigger and energy estimate (`TriggerConstantContract` / estimate APIs). Decode TRC-20 `transfer` and approvals. Do not assume EVM trace format.
+**Proposed.** Node / TronGrid-style constant trigger and energy estimate. Decode TRC-20 `transfer` and approvals. Do not assume EVM trace format. TRON remains the user’s execution chain when the proposal is a TRON transaction.
 
-## Solana and others
+## Other networks
 
-**Proposed.** Instruction-level simulation (`simulateTransaction`) into the same normalized effects model.
-
-BNB Chain, Base, Arbitrum, and other EVM L2s reuse the EVM adapter with a chain id. They are not separate protocols.
+**Proposed.** Solana instruction-level `simulateTransaction` into the same normalized effects model. Other signing formats (permit / EIP-712, NFT, bridges) are also proposed.

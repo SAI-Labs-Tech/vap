@@ -1,26 +1,30 @@
 ---
-title: Providers
-description: Simulation, security, AML — not hardcoded vendors
+title: Integrations
+description: Provider interfaces
 ---
 
-SAI Guard adapters should speak abstract interfaces. Vendor JSON is translated into SAI Guard check results.
+SAI Guard adapters speak abstract interfaces. Vendor JSON is translated into check results.
 
-## Status in this repository
+No external provider is integrated in `@sai-labs/vap` today. Simulation in v0.1 is a local decoder for a demo `transfer`.
 
-**No external provider is integrated** in `@sai-labs/vap` today. Simulation in v0.1 is a local decoder for a demo `transfer`.
+## Interfaces
 
-## Intended classes
+```ts
+interface SimulationProvider {}
+interface SecurityProvider {}
+interface AMLProvider {}
+interface ReputationProvider {}
+```
 
 | Interface | Job |
 | --- | --- |
-| SimulationProvider | Pre-execute / trace unsigned tx |
-| SecurityProvider | Malicious contract, phishing, honeypot, token risk |
-| AMLProvider | AML / sanctions / fraud intel |
-| ReputationProvider | Address and origin reputation |
-| IntentVerifier | Layer 2 MATCH / MISMATCH / UNCERTAIN |
+| `SimulationProvider` | Pre-execute / trace an unsigned transaction |
+| `SecurityProvider` | Malicious contract, phishing, honeypot, token risk |
+| `AMLProvider` | AML / sanctions / fraud intel |
+| `ReputationProvider` | Address and origin reputation |
 
-Example names for future adapters (not claims of support): GoPlus, Blockaid, Tenderly, TRM Labs, AMLBot, native RPC.
+Names such as GoPlus, Blockaid, Tenderly, TRM Labs, and AMLBot are examples for future adapters, not claims of support.
 
-x402: only document per-provider when that provider’s documentation shows 402 payments. Until then, assume API keys.
+x402: document per provider only when that provider’s documentation shows 402 payments. Until then, assume API keys.
 
-Failures: [Risk Engine](/reference/risk-engine/) fail-closed rules.
+Provider failures follow [fail-closed](/reference/risk-engine/#fail-closed) policy.

@@ -1,61 +1,62 @@
 ---
-title: Threat Model
-description: What SAI Guard is supposed to stop
+title: Threat model
+description: Assets, trust boundaries, threats, residual risk
 ---
 
-SAI Guard addresses substitution and opacity at signing time. It does not stop a user who knowingly confirms a bad intent, and it does not stop malware that signs without the wallet.
+SAI Guard Protocol addresses substitution and opacity at signing time. It does not stop a user who confirms a bad intent, and it does not stop malware that signs outside the wallet.
 
-## Attacks
+## Assets
 
-| Attack | Response |
-| --- | --- |
-| Malicious dApp / compromised frontend | Simulate bytes; ignore captions; origin phishing intel |
-| Transaction substitution after display | Re-hash payload; signature covers the simulated digest |
-| Address poisoning / clipboard replace | Intent destination vs simulated recipient; reputation |
-| Unlimited approval / malicious spender | Decode allowance; policy BLOCK or WARNING |
-| Hidden token transfer / internal calls | Simulation effects vs intent |
-| Scam token / honeypot | Layer 3 token security (**Proposed** adapters) |
-| Wrong swap route / slippage | Min-out vs simulated out |
-| WalletConnect “connect” that is `setApprovalForAll` | Method + effects vs declared intent |
-| Phishing origin | Context.origin vs intel |
-| Compromised tx builder or MCP | Independent simulation + independent AI match |
-| Compromised or conflicting verifiers | Fail closed; pin providers; do not majority-vote away BLOCK |
-| Agent / MCP generates malicious tx | Primary use case below |
+- user funds and allowances on the target chain;
+- the unsigned transaction proposal;
+- the bound user intent;
+- verification results and policy.
 
-## Compromised constructor
+## Trust assumptions
 
-```text
-User Intent
-     ↓
-Compromised AI / MCP
-     ↓
-Malicious transaction generated
-     ↓
-SAI Guard independently simulates it
-     ↓
-Intent mismatch
-     ↓
-BLOCKED
-```
+SAI Guard Protocol assumes:
 
-```mermaid
-sequenceDiagram
-    participant U as User
-    participant M as Compromised MCP / agent
-    participant V as SAI Guard
-    participant S as Simulation
-    participant R as Risk Engine
+- the user intent supplied by the wallet is authentic;
+- the chain state used for simulation is sufficiently recent;
+- cryptographic primitives used for hashes and signatures are secure;
+- at least the minimum verification-provider assumptions configured by policy hold.
 
-    U->>M: Swap 1000 USDT to ETH
-    M->>V: Intent + malicious payload
-    V->>S: Simulate unsigned tx
-    S-->>V: Extra token out / unlimited approve
-    V->>R: Effects vs intent
-    R-->>U: BLOCKED
-```
+It does not assume:
 
-MCP approval is not payment approval. See [SDK and MCP](/reference/sdk/).
+- the transaction builder is trusted;
+- the dApp frontend is trusted;
+- the semantic verifier is always correct;
+- external providers are infallible.
+
+## Trust boundaries
+
+| Boundary | Trusted for | Not trusted for |
+| --- | --- | --- |
+| Wallet confirmation surface | Binding user intent | Interpreting calldata |
+| Transaction builder / MCP / dApp | Constructing a proposal | Declaring effects |
+| Simulation host | Pre-execute against stated state | Final verdict |
+| Semantic verifier | Intent vs effects | Safety policy |
+| Security / AML providers | Their signal class | Overriding deterministic BLOCK |
+| SAI Guard Risk Engine | Verdict from policy | Signing |
+| User signer | Authorization | Understanding opaque hex |
+
+## Threats
+
+| Threat | Mitigation | Residual risk |
+| --- | --- | --- |
+| Transaction builder / MCP compromise | Independent simulation + intent verification | Correlated simulation-host compromise |
+| Malicious dApp | Ignore captions; simulate bytes; origin intel | Newly registered phishing domains |
+| Payload substitution after display | Re-hash; signature covers the simulated digest | Wallet that skips re-hash |
+| Address poisoning | Intent destination vs simulated recipient; reputation | User confirmed the poisoned address as intent |
+| Unlimited approval / malicious spender | Decode allowance; policy `WARNING` or `BLOCKED` | Policy that allows unlimited approve |
+| Hidden internal transfers | Simulation effects vs intent | Simulator omitting internals |
+| Wrong swap route / slippage | Min-out vs simulated out | Intent without min-out |
+| Verifier compromise | Deterministic policy + independent providers | Correlated provider compromise |
+| Provider outage | Fail-closed for mandatory checks | Reduced availability |
+| Signing-path bypass (malware with the key) | Outside protocol | Total |
+
+MCP authentication is not payment approval.
 
 ## Residual
 
-If every required verifier and the simulation host are compromised together, or the user’s signer is, SAI Guard cannot recover. Correlated LLM errors are not independent votes — that is why layer 1 is deterministic.
+If required verifiers and the simulation host are compromised together, or the user’s signer is, the protocol cannot recover. Correlated model errors are not independent votes. That is why simulation and deterministic checks are required for `PROTECTED`.

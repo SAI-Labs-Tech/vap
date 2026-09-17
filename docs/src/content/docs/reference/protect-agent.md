@@ -1,60 +1,63 @@
 ---
-title: SAI Protect Agent
-description: Orchestrates verification; does not manage the portfolio
+title: SAI Guard Agent
+description: Orchestration component for verification services
 ---
 
-**Proposed / In Development.** Not present in the v0.1 runtime.
+The SAI Guard Agent coordinates external verification services required by a SAI Guard Protocol policy.
 
-The **SAI Protect Agent** runs the verification workflow. It is not an autonomous portfolio manager. It does not choose investments, rebalance, or sign user chain transactions.
+It does not hold or manage user assets.
 
-```text
-Transaction
-     ↓
-SAI Protect Agent
-     ↓
-Determine required verification checks
-     ↓
-Security / AML / Simulation / AI verifier
-     ↓
-Collect results
-     ↓
-Risk Engine
-```
+This component is not in the v0.1 runtime. See [status](/reference/status/).
+
+## Responsibilities
+
+- select the checks required by policy for the proposal class;
+- call verification providers;
+- authorize provider payments from the agent wallet;
+- aggregate provider responses;
+- submit normalized results to the [SAI Guard Risk Engine](/reference/risk-engine/).
+
+## Out of scope
+
+- selecting investments or managing a portfolio;
+- signing arbitrary user transactions;
+- overriding deterministic security policy.
 
 ## Adaptive depth
 
-Different transactions need different checks.
+Policy MAY vary check depth by action class and risk signals. A transfer to a known exchange MAY require sanctions, address reputation, and basic simulation. An unlimited approval to an unknown spender SHOULD require full simulation, spender reputation, approval analysis, and independent semantic verification.
 
-Simple transfer to a known exchange:
+This is policy, not a hardcoded vendor waterfall.
 
-```text
-sanctions, address reputation, basic simulation
-```
+## Agent wallet
 
-Unknown unlimited approval:
+Distinguish **user wallet** from **protect agent wallet**.
 
 ```text
-full simulation, contract security, spender reputation,
-phishing, approval analysis, independent AI verification,
-optional second security provider
+User Wallet
+    │ transaction proposal
+    ▼
+SAI Guard Protocol
+    │
+    ▼
+SAI Guard Agent
+    │ provider payment
+    ▼
+Agent Wallet
+    │
+    ▼
+Verification Provider
 ```
 
-This is **adaptive verification**, not a fixed vendor waterfall.
+The agent wallet is an operational wallet used to pay verification providers.
 
-## Operational wallet
+The agent wallet MUST NOT be given custody or signing authority over user assets.
 
-The agent pays for infrastructure from an isolated operating balance, not from user funds. Preferred settlement asset in the current design: USDC on [Arc](/reference/arc/) where supported. Traditional API keys remain valid.
+Spending policy SHOULD include:
 
-Example policy (illustrative, not deployed):
+- per-request maximum;
+- daily maximum;
+- approved chains;
+- approved contracts / services.
 
-```text
-SAI Protect Agent Wallet
-Network: Arc
-Asset: USDC
-Daily spend cap: 50 USDC
-Per request cap: 0.10 USDC
-Allowed: registered verification, AML, security, AI verifier services
-Forbidden: arbitrary external transfers, portfolio trading, DeFi speculation
-```
-
-See [Arc](/reference/arc/) for settlement vs user-transaction chains.
+Traditional API-key billing remains valid. Arc settlement is optional. See [Arc settlement](/reference/arc/).

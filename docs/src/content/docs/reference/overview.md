@@ -3,166 +3,92 @@ title: Overview
 description: SAI Guard Protocol
 ---
 
-**SAI Guard Protocol** independently verifies a blockchain signing request against the user's explicit intent **before** the user authorizes it.
+SAI Guard Protocol is a pre-signing transaction verification protocol for wallets and autonomous agents.
 
-The wallet feature is [AI Transaction Protect](/reference/transaction-protect/): decode, simulate, explain, verdict, then wait for the user. The protocol does not manage portfolios or sign on the user's behalf.
+A request contains two primary inputs:
 
-This is a working protocol description, not a published standard and not an audit. Status labels throughout:
+1. the operation the user intended to perform (**user intent**);
+2. the unsigned transaction or signing request produced for that operation (**transaction proposal**).
 
-| Label | Meaning |
-| --- | --- |
-| **Available** | Present in the v0.1 TypeScript reference (`@sai-labs/vap`, HTTP API, MCP) |
-| **In Development** | Target SAI Guard 2.0 protect flow; not the current runtime |
-| **Proposed** | Architecture that is not implemented |
+The protocol simulates the proposal, normalizes its execution effects, runs configured checks, and compares the result with the supplied intent. The [SAI Guard Risk Engine](/reference/risk-engine/) returns one of three verdicts:
 
-The v0.1 package is a hash-bound attestation and execution-gate demo for a frozen token transfer. The 2.0 model below is the product architecture. See [From v0.1](/reference/migration/).
+- **PROTECTED** — required checks passed;
+- **WARNING** — the transaction requires explicit user attention;
+- **BLOCKED** — a configured security rule failed.
 
-## What SAI Guard is
+SAI Guard Protocol does not sign or broadcast user transactions.
 
-Every blockchain transaction can be independently analyzed, simulated, verified against the user's original intent, and risk-checked before the user signs it.
+**AI Transaction Protect** is the user-facing feature inside SAI Wallet, powered by this protocol.
 
-```text
-Intent → Analysis → Simulation → Independent Verification → Risk Decision → User Signature
-```
-
-SAI Guard performs **verification**. It does not decide what the user should invest in, rebalance portfolios, or trade on the user's behalf.
-
-## What SAI Guard is not
-
-| Not | Because |
-| --- | --- |
-| Autonomous asset management | The user remains the final authority over funds |
-| Investment advice | Intent comes from the user, not from SAI Guard |
-| A signing oracle | SAI Guard must not silently sign arbitrary transactions |
-| An LLM security score | The Risk Engine is deterministic policy |
-| Custody | Agent wallets pay for verification services, not user transfers |
-
-Regulatory treatment depends on deployment, jurisdiction, custody, and what the integrating party offers. This document does not make licensing claims.
-
-## Where it sits
-
-```text
-1. Transaction construction     wallet, dApp, or agent
-2. Transaction verification     SAI Guard
-3. Transaction authorization    user / user-authorized wallet
-4. Transaction execution        chain adapter / broadcaster
-```
-
-Those four steps must stay separate. A WalletConnect session, an MCP tool, or an LLM that built the payload is not a substitute for step 2.
-
-## The opaque-signing problem
-
-Wallets still present calldata such as:
-
-```text
-0xa9059cbb000000000000...
-```
-
-or a WalletConnect request the user cannot decode. The user often cannot tell:
-
-- which assets leave the wallet;
-- which assets arrive;
-- which contracts receive approvals, and whether they are unlimited;
-- whether hidden internal calls run;
-- whether the origin is a phishing app;
-- whether the destination is flagged;
-- whether the payload matches what they asked for.
-
-SAI Guard's job is to turn that signing request into a verified, human-readable execution outcome, then return **PROTECTED**, **WARNING**, or **BLOCKED**.
-
-## Core product flow
-
-**In Development**
+## Transaction lifecycle
 
 ```text
 User Intent
     ↓
-Unsigned Transaction / Signing Request
+Transaction Proposal
     ↓
-SAI Guard Protocol
+Simulation
     ↓
-Transaction Decode
+Normalized Effects
     ↓
-Deterministic Simulation
+Verification
     ↓
-Security Intelligence
+SAI Guard Risk Engine
     ↓
-AML / Sanctions / Reputation Checks
+Verdict
     ↓
-Independent AI Intent Verification
-    ↓
-SAI Deterministic Risk Engine
-    ↓
-PROTECTED / WARNING / BLOCKED
-    ↓
-User Reviews Results
-    ↓
-User Signs
-    ↓
-Blockchain Execution
+Wallet Signature
 ```
 
-```mermaid
-flowchart TD
-  I[User intent] --> T[Unsigned transaction]
-  T --> V[SAI Guard Gateway / SDK]
-  V --> D[Decoder]
-  V --> S[Simulation]
-  V --> C[Context collector]
-  D --> N[Normalized effects]
-  S --> N
-  C --> N
-  N --> Sec[Security agent]
-  N --> Aml[AML / risk intelligence]
-  N --> Ai[AI intent verifier]
-  Sec --> R[Deterministic Risk Engine]
-  Aml --> R
-  Ai --> R
-  R --> P[PROTECTED]
-  R --> W[WARNING]
-  R --> B[BLOCKED]
-  P --> U[User decision]
-  W --> U
-  U --> Sig[User signature]
-  Sig --> X[Chain execution]
-```
+Construction, verification, authorization, and execution are separate steps. An MCP session, WalletConnect connection, or model that built the payload is not a substitute for verification.
 
-## Worked example
+The protocol is chain-agnostic. Chain adapters convert network-specific formats into the [normalized effects](/reference/verification/) model.
 
-User intent:
+## Architecture
 
 ```text
-Swap 1,000 USDT → ETH
-Minimum received: 0.31 ETH
+                    User Intent
+                         +
+                Transaction Proposal
+                         │
+                         ▼
+                 Chain Simulation
+                         │
+                         ▼
+                Normalized Effects
+                         │
+             ┌───────────┴────────────┐
+             ▼                        ▼
+     Deterministic Checks      Semantic Verifier
+             │                        │
+             └───────────┬────────────┘
+                         ▼
+              SAI Guard Risk Engine
+                         │
+                         ▼
+             PROTECTED / WARNING / BLOCKED
 ```
 
-Simulation (normalized effects):
+**Deterministic checks** evaluate simulation success, transfers, approvals, recipients, contract calls, and security-provider signals.
 
-```text
-USDT: -1,000
-ETH: +0.3231
-Approvals: none
-Unexpected transfers: none
-```
+The **semantic verifier** compares normalized effects with user intent (`MATCH`, `MISMATCH`, `UNCERTAIN`). It MUST NOT decide whether a transaction is “safe.”
 
-Result:
+The **Risk Engine** applies policy. A language-model `MATCH` MUST NOT override a deterministic `BLOCKED`.
 
-```text
-PROTECTED
-Transaction matches your intent.
-Amount verified · contracts verified · simulation succeeded
-No unexpected approvals or transfers
-Security and AML/sanctions checks passed
-```
+## Boundaries
 
-A different simulation that drains an extra token, or sets unlimited allowance, is **BLOCKED** even if an LLM caption said “swap”.
+SAI Guard Protocol verifies execution against supplied intent. It does not select investments, rebalance portfolios, take custody of user assets, or sign on the user’s behalf. Trust assumptions and residual risk are in the [threat model](/reference/threat-model/).
 
-## Reading order
+[Arc](/reference/arc/) is an optional settlement network for payments from the [SAI Guard Agent](/reference/protect-agent/) to verification providers. The user’s transfer remains on the **target chain**.
 
-1. [Why SAI Guard](/reference/why-vap/)
-2. [Architecture](/reference/architecture/)
-3. [Three-layer verification](/reference/verification/)
-4. [Risk Engine](/reference/risk-engine/)
-5. [Protect Agent](/reference/protect-agent/)
-6. [Arc](/reference/arc/) — optional settlement for verification services, not the user's transaction chain
-7. [SDK](/reference/sdk/) and [HTTP API](/reference/api/)
+## Implementation
+
+`@sai-labs/vap@0.1.0` is a hash-bound attestation gate for a demo `token-transfer`. `protect()`, live chain simulation, and the three-verdict Risk Engine are not in that package. See [protocol status](/reference/status/) and [from v0.1](/reference/migration/).
+
+## Next
+
+- [Architecture](/reference/architecture/)
+- [Verification model](/reference/verification/)
+- [Risk engine](/reference/risk-engine/)
+- [SDK](/reference/sdk/)
+- [HTTP API](/reference/api/)

@@ -1,38 +1,24 @@
 ---
 title: AI Transaction Protect
-description: User-facing wallet feature powered by SAI Guard
+description: SAI Wallet feature powered by SAI Guard Protocol
 ---
 
-**AI Transaction Protect** is how a wallet presents SAI Guard Protocol to a user.
+**SAI AI Transaction Protect** (AI Transaction Protect) is the user-facing feature inside SAI Wallet. It is powered by [SAI Guard Protocol](/reference/overview/).
 
-SAI Guard Protocol is the protocol. Transaction Protect is the product surface: decode, simulate, explain, verdict, then wait for the user.
+The wallet presents decode, simulation, explanation, and a verdict, then waits for the user. This UI is in development. The v0.1 runtime is not that UI.
 
-**In Development** as a wallet feature. The v0.1 reference runtime is not this UI.
+## Display
 
-## What the user sees
+Lead with the verdict. Do not lead with an internal 0–100 score.
 
-Prefer three states. Do not lead with an internal 0–100 score.
+**PROTECTED** — required checks succeeded; simulated outcome corresponds to intent. Show asset deltas, approvals, origin, and reason list.
 
-### PROTECTED
+**WARNING** — needs attention (unlimited approval, unknown contract, unusual destination, advisory provider failure, semantic `UNCERTAIN`). The wallet MUST show why. A confirm control MUST NOT hide the warning.
 
-Required checks succeeded. Simulated outcome corresponds to intent.
-
-The wallet may show asset deltas, approvals (none expected), origin, and a short reason list.
-
-### WARNING
-
-The transaction may be legitimate but needs attention: unlimited approval, unknown contract, unusual destination, partial provider failure, AI intent `UNCERTAIN`.
-
-The wallet must say *why*. A confirm control must not hide the warning.
-
-### BLOCKED
-
-A critical rule failed. The wallet should refuse to submit that payload. The user can cancel, change the request, or — only if product policy allows — acknowledge and proceed on a new, explicit path. Default: do not sign.
+**BLOCKED** — a hard rule failed. The wallet MUST refuse the normal signing flow. Default: do not sign.
 
 ## Who signs
 
-The user, or a user-authorized wallet policy the user already accepted (session key, smart-account module). Transaction Protect does not sign because the agent is “confident”.
+The user, or a user-authorized wallet policy the user already accepted (session key, smart-account module). The feature MUST NOT sign because a model is confident.
 
-## Relationship to agents
-
-An AI assistant may *construct* a swap. Transaction Protect still runs. If construction and verification share a process or a model, say so: independence is weakened. See [AI independence](/reference/principles/#ai-is-not-the-root-of-trust).
+A constructor agent may build a swap. AI Transaction Protect still runs. If construction and verification share a process or a model, independence is weakened.

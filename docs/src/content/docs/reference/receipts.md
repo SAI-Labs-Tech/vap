@@ -1,53 +1,31 @@
 ---
-title: Verification Receipts
-description: Hashes, not private analysis, plus optional anchoring
+title: Verification receipts
+description: SAI Guard Verification Receipt
 ---
 
-**Proposed.** v0.1 has an execution receipt after demo submit, not this protect-time receipt.
+A **SAI Guard Verification Receipt** is a hash-bound record of a protect run: verdict and digests, not private analysis.
 
-Each protect call should be able to emit a **verification receipt**: hashes and verdict, not raw user analytics.
+Protect-time receipts are not implemented. v0.1 emits an `ExecutionReceipt` after demo submit. See [status](/reference/status/).
 
-```json
-{
-  "protocolVersion": "vap-2",
-  "chain": "tron",
-  "transactionHash": null,
-  "intentHash": "...",
-  "simulationHash": "...",
-  "verificationHash": "...",
-  "policyHash": "...",
-  "verdict": "PROTECTED",
-  "timestamp": 0
-}
+## Object (target)
+
+```ts
+type VerificationReceipt = {
+  version: string;
+  chainId: string;
+  intentHash: string;
+  transactionHash: string | null;
+  effectsHash: string;
+  policyHash: string;
+  verdict: "PROTECTED" | "WARNING" | "BLOCKED";
+  verifiedAt: number;
+};
 ```
 
-`transactionHash` is filled after broadcast if the wallet reports it; protect-time receipts may omit it.
+`transactionHash` MAY be null at protect time and filled after the wallet reports broadcast.
 
-```text
-User Intent            → intentHash
-Transaction Simulation → simulationHash
-Verification Results   → verificationHash
-Risk Policy            → policyHash
-                       → Verification Receipt
-```
+Sensitive decoded data stays off-chain. The receipt binds intent, effects, policy, and verdict.
 
-Sensitive decoded data stays off-chain.
+## Arc anchoring
 
-## Arc Verification Registry
-
-**Proposed / Future.** Batch receipts into a Merkle tree; publish the root on Arc. Benefits: tamper evidence, auditability, proof that verification ran around authorization, small on-chain footprint. Not built.
-
-## Verification marketplace
-
-**Proposed.** Route requirements to providers by capability, chain, latency, reputation, price, policy — instead of always calling vendor A then B.
-
-```json
-{
-  "service": "address-risk",
-  "provider": "example-provider",
-  "chains": ["ethereum", "base"],
-  "price": "0.003 USDC",
-  "settlement": "arc",
-  "responseType": "AddressRiskResult"
-}
-```
+**Proposed.** Batch receipt hashes into a Merkle tree and publish the root on Arc for tamper evidence. Not built.

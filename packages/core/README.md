@@ -19,6 +19,6 @@ vap.submitAttestation({ intentId: intent.intentId, role: "safety-verifier" });
 const done = vap.executeApproved(intent.intentId);
 ```
 
-MCP transport: [`@sai-labs/vap-mcp`](https://www.npmjs.com/package/@sai-labs/vap-mcp). Spec: https://vap.saiwallet.ai
+MCP transport: [`@sai-labs/vap-mcp`](https://www.npmjs.com/package/@sai-labs/vap-mcp). Spec: https://guard.sai-labs.pro
 
 This is a reference implementation. It is not a published standard and it is not audited.

@@ -11,7 +11,7 @@ VAP_SCOPE=agent VAP_TENANT=sai sai-vap-mcp
 npx @sai-labs/vap-mcp
 ```
 
-Source lives in the SAI Guard monorepo at [`packages/mcp`](https://github.com/SAI-Labs-Tech/vap/tree/main/packages/mcp). Spec: https://vap.saiwallet.ai/reference/sdk/
+Source lives in the SAI Guard monorepo at [`packages/mcp`](https://github.com/SAI-Labs-Tech/vap/tree/main/packages/mcp). Spec: https://guard.sai-labs.pro/reference/sdk/
 
 ## Scopes
 

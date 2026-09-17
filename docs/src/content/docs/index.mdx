@@ -1,43 +1,28 @@
 ---
 title: SAI Guard Protocol
-description: Independently verify the transaction before the user signs it.
+description: Pre-signing transaction verification protocol
 template: splash
 hero:
-  tagline: Independently verify the transaction before the user signs it.
+  tagline: Verify the transaction proposal against user intent before the wallet signs.
   image:
     file: ../../assets/sai_logo.svg
   actions:
-    - text: Start Reading
+    - text: Overview
       link: /reference/overview/
       icon: right-arrow
       variant: primary
-    - text: Architecture
-      link: /reference/architecture/
+    - text: HTTP API
+      link: /reference/api/
       icon: document
     - text: GitHub
       link: https://github.com/SAI-Labs-Tech/vap
       icon: github
 ---
 
-import {CardGrid} from '@astrojs/starlight/components';
-import Card from 'starlight-plugin-icons/components/Card.astro';
+SAI Guard Protocol evaluates a **user intent** and a **transaction proposal** before signing. The [SAI Guard Risk Engine](/reference/risk-engine/) returns `PROTECTED`, `WARNING`, or `BLOCKED`. The wallet remains the signing authority.
 
-**SAI Guard Protocol** independently analyzes, simulates, and risk-checks a blockchain signing request against the user's stated intent. The user remains the signing authority.
+**AI Transaction Protect** is the SAI Wallet feature powered by this protocol.
 
-<CardGrid>
-	<Card title="Simulate before signature" icon="i-heroicons:beaker" bordered>
-		Decode the payload and derive balance changes from simulation. Do not trust a dApp caption or an agent summary.
-	</Card>
-	<Card title="AI is not the oracle" icon="i-heroicons:shield-check" bordered>
-		Independent AI checks whether simulated effects match intent. Deterministic policy produces PROTECTED, WARNING, or BLOCKED.
-	</Card>
-	<Card title="User signs" icon="i-heroicons:lock-closed" bordered>
-		SAI Guard does not silently sign. Construction, verification, authorization, and execution are separate steps.
-	</Card>
-</CardGrid>
-
-- [Overview](/reference/overview/)
 - [Architecture](/reference/architecture/)
-- [Risk Engine](/reference/risk-engine/)
-- [Arc](/reference/arc/)
 - [SDK](/reference/sdk/)
+- [Protocol status](/reference/status/)

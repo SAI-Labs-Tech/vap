@@ -2,7 +2,7 @@
 
 Independently verify a blockchain signing request against the user's intent **before** the user signs. The wallet remains the signing authority.
 
-This tree is a reference implementation (v0.1 attestation gate) and a spec site for the v2 protect architecture. It is not a published standard and it is not audited. The protocol does not manage portfolios or sign for the user.
+This tree is a reference implementation (v0.1 attestation gate). It is not a published standard and it is not audited.
 
 - Docs: https://guard.sai-labs.pro (mirror: https://vap.saiwallet.ai)
 - Protocol, SDK, HTTP API: [SAI-Labs-Tech/vap](https://github.com/SAI-Labs-Tech/vap)
@@ -15,7 +15,7 @@ packages/core   TypeScript SDK (v0.1 hashes, Ed25519, gate)
 packages/mcp    MCP tools
 packages/api    HTTP API
 examples        INV-1042 token transfer
-docs            Spec site
+schemas         JSON Schema
 ```
 
 ```bash
@@ -30,7 +30,6 @@ npm install
 npm test
 npm run example
 npm run mcp
-npm run docs
 ```
 
 MCP scopes: `VAP_SCOPE=agent|verifier|executor|all`. An MCP session is not transaction approval.
