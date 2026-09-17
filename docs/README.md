@@ -1,4 +1,4 @@
-# SAI VAP docs
+# SAI Guard Protocol docs
 
 Starlight site, same shell as the SAI Wallet reference.
 

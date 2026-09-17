@@ -22,6 +22,6 @@ services:
     environment:
       VAP_API_ADDR: ":8097"
       VAP_TENANT: sai
-      VAP_CORS_ORIGINS: https://vap.saiwallet.ai,https://sai-labs.pro,http://localhost:4322
+      VAP_CORS_ORIGINS: https://vap.saiwallet.ai,https://guard.sai-labs.pro,https://sai-labs.pro,http://localhost:4322
     ports:
       - "8097:8097"

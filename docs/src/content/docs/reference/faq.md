@@ -1,40 +1,46 @@
 ---
 title: FAQ
-description: Why an action stops
+description: Common stops and non-goals
 ---
 
 <details>
-<summary>Why is this not a standard yet?</summary>
+<summary>Is SAI Guard a published standard?</summary>
 
-Schemas, EIP-712 types, wire encodings, clock skew, revocation, and published vectors are not frozen. Without those, implementations will not interoperate.
+No. Schemas, chain adapters, and protect APIs are not frozen. v0.1 is a reference.
 </details>
 
 <details>
-<summary>Why did the gate refuse a PASS?</summary>
+<summary>Does MCP login mean the transaction is approved?</summary>
 
-Usual causes: expired attestation, revoked key, policy epoch moved, payload bytes drifted, business key already claimed, two attestations from one operator.
+No. MCP authenticates a client. The Risk Engine verdict and the user’s signature authorize execution.
 </details>
 
 <details>
-<summary>The agent is sure the invoice is right</summary>
+<summary>Can we skip simulation if the AI said it matches?</summary>
 
-Then the Intent Authority can confirm the structured fields. Model certainty is not a signature.
+No. Layer 1 is required. AI does not override missing or failed simulation when policy marks it mandatory.
 </details>
 
 <details>
-<summary>Can we skip safety if semantic passed?</summary>
+<summary>Why BLOCKED when the dApp UI looked fine?</summary>
 
-No. They answer different questions. Semantic: does this match the request. Safety: are the consequences allowed.
+The UI is not evidence. Simulation showed different effects or a hard rule failed.
 </details>
 
 <details>
-<summary>Payment API timed out</summary>
+<summary>Must the user transact on Arc?</summary>
 
-State is `SUBMISSION_UNKNOWN`. Reconcile with the same idempotency key. Do not create a second payment.
+No. Arc is an optional settlement layer for verification services. The user’s transfer/swap stays on the target chain.
 </details>
 
 <details>
-<summary>Does MCP login mean the payment is approved?</summary>
+<summary>Do you call GoPlus / Blockaid / Tenderly today?</summary>
 
-No. MCP auth gets you into the server. The bundle gets you through the gate.
+Not in this repository. Those names are example providers.
+</details>
+
+<details>
+<summary>Is this investment advice or automated trading?</summary>
+
+No. SAI Guard verifies execution against explicit user intent.
 </details>

@@ -1,28 +1,61 @@
 ---
-title: Threat model
-description: What the protocol is supposed to stop
+title: Threat Model
+description: What SAI Guard is supposed to stop
 ---
+
+SAI Guard addresses substitution and opacity at signing time. It does not stop a user who knowingly confirms a bad intent, and it does not stop malware that signs without the wallet.
+
+## Attacks
 
 | Attack | Response |
 | --- | --- |
-| PDF says pay the attacker | Untrusted text cannot widen the mandate; check the directory |
-| Summary says transfer, payload is approve | Independent decoder |
-| Address / amount / calldata change after approval | New digest; old bundle fails |
-| One shop, three keys | Operator policy on the trust registry |
-| Move signatures to another tenant or chain | Domain tags and binding fields |
-| Orchestrator swaps a verdict | Signature covers the verdict and material fields |
-| Shop for a PASS | Pinned verifiers, DENY tracking, revision limits |
-| Two calls spend one budget | Atomic claim, or on-chain stateful limit |
-| Submit, lose the HTTP response | Idempotency key, `SUBMISSION_UNKNOWN` |
-| Risk API down | `INCONCLUSIVE`; do not skip |
-| Key revoked after PASS | Check current epoch at the gate |
-| Agent calls the bank API itself | Agent has no credentials; execution path is locked |
-| Hide the name, keep the address | Minimization, not anonymity |
+| Malicious dApp / compromised frontend | Simulate bytes; ignore captions; origin phishing intel |
+| Transaction substitution after display | Re-hash payload; signature covers the simulated digest |
+| Address poisoning / clipboard replace | Intent destination vs simulated recipient; reputation |
+| Unlimited approval / malicious spender | Decode allowance; policy BLOCK or WARNING |
+| Hidden token transfer / internal calls | Simulation effects vs intent |
+| Scam token / honeypot | Layer 3 token security (**Proposed** adapters) |
+| Wrong swap route / slippage | Min-out vs simulated out |
+| WalletConnect “connect” that is `setApprovalForAll` | Method + effects vs declared intent |
+| Phishing origin | Context.origin vs intel |
+| Compromised tx builder or MCP | Independent simulation + independent AI match |
+| Compromised or conflicting verifiers | Fail closed; pin providers; do not majority-vote away BLOCK |
+| Agent / MCP generates malicious tx | Primary use case below |
 
-Do not multiply three LLM error rates. The errors are correlated.
+## Compromised constructor
 
-Before production: cross-language test vectors, a negative test per row above, concurrency on payment failures, review of every smart-account path, external audit. Those are acceptance criteria, not work this document already did.
+```text
+User Intent
+     ↓
+Compromised AI / MCP
+     ↓
+Malicious transaction generated
+     ↓
+SAI Guard independently simulates it
+     ↓
+Intent mismatch
+     ↓
+BLOCKED
+```
 
-The core does not need a token or a chain. An append-only log is enough; anchoring is optional and does not prove the checks were right.
+```mermaid
+sequenceDiagram
+    participant U as User
+    participant M as Compromised MCP / agent
+    participant V as SAI Guard
+    participant S as Simulation
+    participant R as Risk Engine
 
-[ERC-8004](https://eips.ethereum.org/EIPS/eip-8004) can supply agent identity or a place to publish results. VAP still owns approval of a specific action.
+    U->>M: Swap 1000 USDT to ETH
+    M->>V: Intent + malicious payload
+    V->>S: Simulate unsigned tx
+    S-->>V: Extra token out / unlimited approve
+    V->>R: Effects vs intent
+    R-->>U: BLOCKED
+```
+
+MCP approval is not payment approval. See [SDK and MCP](/reference/sdk/).
+
+## Residual
+
+If every required verifier and the simulation host are compromised together, or the user’s signer is, SAI Guard cannot recover. Correlated LLM errors are not independent votes — that is why layer 1 is deterministic.

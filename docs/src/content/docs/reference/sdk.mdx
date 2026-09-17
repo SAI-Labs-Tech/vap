@@ -1,0 +1,94 @@
+---
+title: SDK and MCP
+description: Integrate protect(); MCP is not a trust boundary
+---
+
+import Card from 'starlight-plugin-icons/components/Card.astro';
+
+MCP is a transport. HTTP/SDK is another. [MCP authorization](https://modelcontextprotocol.io/specification/2025-06-18/basic/authorization) authenticates a client to a server. It does not approve a transaction.
+
+An MCP-built payload gets the same verification as WalletConnect or an in-wallet swap. Do not trust a tool because the MCP server is allowlisted. See [MCP security best practices](https://modelcontextprotocol.io/docs/tutorials/security/security_best_practices).
+
+<Card title="@sai-labs/vap" icon="i-heroicons:cube" bordered>
+	**Available:** v0.1 canonicalization, hashes, role policy, gate, demo runtime.
+
+	[npm](https://www.npmjs.com/package/@sai-labs/vap) · [GitHub](https://github.com/SAI-Labs-Tech/vap)
+</Card>
+
+<Card title="@sai-labs/vap-mcp" icon="i-heroicons:command-line" bordered>
+	**Available:** MCP facade over the v0.1 runtime. Scopes `agent|verifier|executor|all`.
+
+	[npm](https://www.npmjs.com/package/@sai-labs/vap-mcp) · [GitHub](https://github.com/SAI-Labs-Tech/vap-mcp)
+</Card>
+
+Python and Go ports are planned.
+
+## Target protect API
+
+**In Development.** Not exported by `@sai-labs/vap@0.1.0`.
+
+```ts
+const result = await vap.protect({
+  chain: "ethereum",
+  intent: {
+    type: "swap",
+    fromAsset: "USDT",
+    fromAmount: "1000",
+    toAsset: "ETH",
+    minReceived: "0.31",
+  },
+  transaction: { from, to, value, data },
+  context: { source: "walletconnect", origin: "https://app.example.com" },
+});
+```
+
+```ts
+{
+  verdict: "PROTECTED",
+  summary: "Transaction matches the requested swap.",
+  effects: [
+    { asset: "USDT", change: "-1000" },
+    { asset: "ETH", change: "+0.3231" },
+  ],
+  checks: {
+    simulation: "PASS",
+    intent: "PASS",
+    contractSecurity: "PASS",
+    approvalSecurity: "PASS",
+    aml: "PASS",
+    sanctions: "PASS",
+  },
+  warnings: [],
+}
+```
+
+Provider-specific payloads stay internal.
+
+## Available v0.1 usage
+
+```ts
+import { VapRuntime } from "@sai-labs/vap";
+
+const vap = new VapRuntime();
+vap.registerMandate(mandate);
+vap.authorizeIntent(intent, mandate.mandateId);
+const prepared = vap.prepareAction(intent.intentId);
+vap.submitProposal({ intentId: intent.intentId, prepared, executorId, expiresAt });
+vap.submitAttestation({ intentId: intent.intentId, role: "semantic-verifier" });
+vap.submitAttestation({ intentId: intent.intentId, role: "safety-verifier" });
+const done = vap.executeApproved(intent.intentId);
+```
+
+The agent client does not mint intents and does not hold execution credentials. `UNSUPPORTED_CAPABILITY` if an adapter cannot bind an exact payload.
+
+### MCP tools (v0.1)
+
+| Tool | Caller |
+| --- | --- |
+| `vap.get_capabilities` | Authenticated client |
+| `vap.prepare_action` / `vap.submit_proposal` | Agent |
+| `vap.get_status` / `vap.get_receipt` | Tenant client |
+| `vap.submit_attestation` | Verifier |
+| `vap.execute_approved` | Executor; gate still runs |
+
+Default `VAP_SCOPE=agent`. HTTP: `https://vap-api.saiwallet.ai`.

@@ -1,7 +1,7 @@
 {
   "name": "@sai-labs/vap-mcp",
   "version": "0.1.0",
-  "description": "MCP facade for SAI VAP. MCP auth is not payment approval.",
+  "description": "MCP facade for SAI Guard. MCP auth is not payment approval.",
   "license": "MIT",
   "homepage": "https://github.com/SAI-Labs-Tech/vap-mcp",
   "bugs": {

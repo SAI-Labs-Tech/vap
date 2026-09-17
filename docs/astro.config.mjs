@@ -31,7 +31,7 @@ export default defineConfig({
 		UnoCSS(),
 		Icons({
 			starlight:{
-				title: 'SAI VAP',
+				title: 'SAI Guard Protocol',
 				favicon: '/favicon.ico',
 				social: [
 					{ icon: 'github', label: 'GitHub', href: 'https://github.com/SAI-Labs-Tech/vap' },
@@ -45,13 +45,13 @@ export default defineConfig({
 				customCss: [
 					'./src/styles/custom.css',
 				],
-				description: 'SAI Verified Agent Protocol',
+				description: 'SAI Guard Protocol',
 				head: [
 					{ tag: 'link', attrs: { rel: 'icon', href: '/favicon-48.png', type: 'image/png', sizes: '48x48' } },
 					{ tag: 'link', attrs: { rel: 'apple-touch-icon', href: '/apple-touch-icon.png' } },
 				],
 				defaultLocale: 'root',
-				tableOfContents: false,
+				tableOfContents: true,
 				locales: {
 					root: {
 						label: 'English',
@@ -59,26 +59,51 @@ export default defineConfig({
 					},
 				},
 				sidebar: [
-					{ label: 'Overview', slug: 'reference/overview' },
-					{ label: 'Roles', slug: 'reference/roles' },
 					{
-						label: 'Flow',
+						label: 'Introduction',
 						items: [
-							{ label: 'Authorization', slug: 'reference/flow/authorization' },
-							{ label: 'Stages', slug: 'reference/flow/stages' },
-							{ label: 'Execution Gate', slug: 'reference/flow/execution-gate' },
+							{ label: 'Overview', slug: 'reference/overview' },
+							{ label: 'Why SAI Guard', slug: 'reference/why-vap' },
+							{ label: 'AI Transaction Protect', slug: 'reference/transaction-protect' },
+							{ label: 'Core Principles', slug: 'reference/principles' },
 						],
 					},
 					{
-						label: 'Protocol',
+						label: 'Architecture',
 						items: [
-							{ label: 'Objects', slug: 'reference/protocol/objects' },
-							{ label: 'Binding', slug: 'reference/protocol/binding' },
+							{ label: 'Protocol Architecture', slug: 'reference/architecture' },
+							{ label: 'Transaction Lifecycle', slug: 'reference/lifecycle' },
+							{ label: 'Three-Layer Verification', slug: 'reference/verification' },
+							{ label: 'Deterministic Risk Engine', slug: 'reference/risk-engine' },
+							{ label: 'SAI Protect Agent', slug: 'reference/protect-agent' },
+							{ label: 'Threat Model', slug: 'reference/threat-model' },
 						],
 					},
-					{ label: 'SDK and MCP', slug: 'reference/sdk' },
-					{ label: 'Example', slug: 'reference/example' },
-					{ label: 'Threat model', slug: 'reference/threat-model' },
+					{
+						label: 'Transaction Protection',
+						items: [
+							{ label: 'Transaction Types', slug: 'reference/transactions' },
+							{ label: 'Networks', slug: 'reference/networks' },
+							{ label: 'Examples', slug: 'reference/examples' },
+						],
+					},
+					{
+						label: 'Agentic Infrastructure',
+						items: [
+							{ label: 'Arc — Settlement Layer', slug: 'reference/arc' },
+							{ label: 'Receipts and Marketplace', slug: 'reference/receipts' },
+							{ label: 'Providers', slug: 'reference/providers' },
+						],
+					},
+					{
+						label: 'Developers',
+						items: [
+							{ label: 'SDK and MCP', slug: 'reference/sdk' },
+							{ label: 'REST API', slug: 'reference/api' },
+							{ label: 'Schemas', slug: 'reference/schemas' },
+							{ label: 'From v0.1', slug: 'reference/migration' },
+						],
+					},
 					{ label: 'FAQ', slug: 'reference/faq' },
 					{ label: 'Glossary', slug: 'reference/glossary' },
 				],

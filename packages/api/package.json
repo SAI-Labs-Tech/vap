@@ -2,7 +2,7 @@
   "name": "@sai-labs/vap-api",
   "private": true,
   "version": "0.1.0",
-  "description": "HTTP API for SAI VAP. MCP is a separate transport.",
+  "description": "HTTP API for SAI Guard. MCP is a separate transport.",
   "homepage": "https://vap-api.saiwallet.ai",
   "bugs": {
     "url": "https://github.com/SAI-Labs-Tech/vap/issues"

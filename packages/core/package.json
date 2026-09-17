@@ -1,7 +1,7 @@
 {
   "name": "@sai-labs/vap",
   "version": "0.1.0",
-  "description": "SAI Verified Agent Protocol core: schemas, canonicalization, signatures, gate",
+  "description": "SAI Guard Protocol core: schemas, canonicalization, signatures, gate",
   "license": "MIT",
   "homepage": "https://vap.saiwallet.ai",
   "bugs": {

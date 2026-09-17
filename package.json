@@ -2,7 +2,7 @@
   "name": "sai-vap",
   "private": true,
   "version": "0.1.0",
-  "description": "SAI VAP — SAI Verified Agent Protocol",
+  "description": "SAI Guard Protocol",
   "homepage": "https://vap.saiwallet.ai",
   "bugs": {
     "url": "https://github.com/SAI-Labs-Tech/vap/issues"

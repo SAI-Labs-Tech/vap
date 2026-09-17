@@ -1,9 +1,9 @@
 ---
-title: SAI VAP
-description: SAI Verified Agent Protocol
+title: SAI Guard Protocol
+description: Independently verify the transaction before the user signs it.
 template: splash
 hero:
-  tagline: Agents prepare. They do not execute.
+  tagline: Independently verify the transaction before the user signs it.
   image:
     file: ../../assets/sai_logo.svg
   actions:
@@ -11,8 +11,8 @@ hero:
       link: /reference/overview/
       icon: right-arrow
       variant: primary
-    - text: SDK
-      link: /reference/sdk/
+    - text: Architecture
+      link: /reference/architecture/
       icon: document
     - text: GitHub
       link: https://github.com/SAI-Labs-Tech/vap
@@ -22,21 +22,22 @@ hero:
 import {CardGrid} from '@astrojs/starlight/components';
 import Card from 'starlight-plugin-icons/components/Card.astro';
 
-The protocol sits between a user-authorized request and a payment or chain call. Each step leaves a signed attestation. The execution path will not move without the full set.
+**SAI Guard Protocol** independently analyzes, simulates, and risk-checks a blockchain signing request against the user's stated intent. The user remains the signing authority.
 
 <CardGrid>
-	<Card title="Intent first" icon="i-heroicons:lock-closed" bordered>
-		The agent does not invent the payment. A trusted app or a limited mandate issues `AuthorizedIntent` before `prepare` runs.
+	<Card title="Simulate before signature" icon="i-heroicons:beaker" bordered>
+		Decode the payload and derive balance changes from simulation. Do not trust a dApp caption or an agent summary.
 	</Card>
-	<Card title="Independent checks" icon="i-heroicons:shield-check" bordered>
-		Semantic and safety verifiers decode the payload themselves. An LLM confidence score is not a signature.
+	<Card title="AI is not the oracle" icon="i-heroicons:shield-check" bordered>
+		Independent AI checks whether simulated effects match intent. Deterministic policy produces PROTECTED, WARNING, or BLOCKED.
 	</Card>
-	<Card title="One frozen action" icon="i-heroicons:cube" bordered>
-		The gate recomputes hashes, checks roles, and claims the business key. A boolean in a database is not permission to send funds.
+	<Card title="User signs" icon="i-heroicons:lock-closed" bordered>
+		SAI Guard does not silently sign. Construction, verification, authorization, and execution are separate steps.
 	</Card>
 </CardGrid>
 
 - [Overview](/reference/overview/)
-- [Roles](/reference/roles/)
-- [Flow](/reference/flow/authorization/)
-- [SDK and MCP](/reference/sdk/)
+- [Architecture](/reference/architecture/)
+- [Risk Engine](/reference/risk-engine/)
+- [Arc](/reference/arc/)
+- [SDK](/reference/sdk/)

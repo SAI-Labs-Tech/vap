@@ -1,6 +1,6 @@
 # @sai-labs/vap
 
-SAI Verified Agent Protocol core: JCS canonicalization, hashes, Ed25519, role policy, and the execution gate.
+SAI Guard Protocol core: JCS canonicalization, hashes, Ed25519, role policy, and the execution gate.
 
 ```bash
 npm install @sai-labs/vap
